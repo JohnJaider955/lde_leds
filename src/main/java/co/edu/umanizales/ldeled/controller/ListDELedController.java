@@ -65,5 +65,11 @@ public class ListDELedController {
                 null), HttpStatus.OK);
     }
 
+    @GetMapping(path = "/turnonandOffleds")
+    public ResponseEntity<ResponseDTO> turnOnAndOffLeds(){
+        listDELedService.getLeds().turnOnAndOffLeds();
+        return new ResponseEntity<>(new ResponseDTO(200, "Se han prendido y apagado las luces led desde el medio",
+                null), HttpStatus.OK);
+    }
 }
 
