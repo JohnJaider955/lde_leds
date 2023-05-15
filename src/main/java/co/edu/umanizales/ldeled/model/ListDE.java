@@ -67,12 +67,11 @@ public class ListDE {
         si no hay natos
         que se establezca el nuevo nodo como la cabeza y finalice el método
      si no, se llama a un ayudante y que se posicione en la cabeza
-     mientras en el siguiente nodo, o en el brazo exista algo
+     mientras en el siguiente nodo, o en el brazo (o cable) exista algo
         que el ayudante tome el siguiente nodo (o se pase al final)
      que se establezca el siguiente nodo del nodo del ayudante como el nuevo nodo
 
      */
-
     public void addLedsToFinal (Led led) {
         NodeDE newNode = new NodeDE(led);
         if (head == null) {
@@ -86,6 +85,16 @@ public class ListDE {
         temp.setNextDE(newNode);
     }
 
+    /**
+    -Encender luz led por id
+    Si hay datos
+        llamo a un ayudante y que se posicione en la cabeza
+        mientras en el siguiente nodo, o en el brazo (o cable) exista algo
+            si en el id del nodo actual donde está el ayudante coincide con el id especificado
+                que se establezca el estado del la luz led del nodo actual como encendido
+                que se salga del bucle ya que se ha encontrado el id
+            que el ayudante tome el siguiente nodo (o se pase al final)
+     */
     public void turnOnLedId(int id) {
         if (head != null) {
             NodeDE temp = this.head;
@@ -98,6 +107,18 @@ public class ListDE {
             }
         }
     }
+
+    /**
+     -Apagar led por id
+     si hay datos
+        llamo un ayudante y que se posicione en la cabeza
+        mientras en el siguiente nodo, o en el brazo (o cable) exista algo
+            si en el id del nodo actual donde está el ayudante coincide con el id especificado
+            que se establezca el estado del la luz led del nodo actual como apagado
+            que se salga del bucle ya que se ha encontrado el id
+        que el ayudante tome el siguiente nodo (o se pase al final)
+
+     */
 
     public void turnOffLedId(int id) {
         if (head != null) {
@@ -112,6 +133,15 @@ public class ListDE {
         }
     }
 
+    /**
+    -Reiniciar Leds
+     llamo a un ayudante y que se posicione en la cabeza
+        mientras hayan datos en la lista, donde está posicionado el ayudante
+        que el ayudante establezca el estado del led del nodo actual como apagado
+        ahora que el ayudante restablezca la fecha de apagado del nodo actual como nula
+        que restablezca la fecha de encendido del nodo actual como nula
+     que el ayudante tome el siguiente nodo (o se pase al final)
+     */
     public void rebootLeds() {
         NodeDE temp = head;
         while (temp != null) {
