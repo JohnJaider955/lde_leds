@@ -3,11 +3,14 @@ package co.edu.umanizales.ldeled.model;
 import lombok.Data;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class ListDE {
     private NodeDE head;
     private int size;
+    private List<Led> leds = new ArrayList<>();
 
     /**
     -Añadir una luz led:
@@ -86,141 +89,173 @@ public class ListDE {
     }
 
     /**
-    -Encender luz led por id
-    Si hay datos
-        llamo a un ayudante y que se posicione en la cabeza
-        mientras en el siguiente nodo, o en el brazo (o cable) exista algo
-            si en el id del nodo actual donde está el ayudante coincide con el id especificado
-                que se establezca el estado del la luz led del nodo actual como encendido
-                que se salga del bucle ya que se ha encontrado el id
-            que el ayudante tome el siguiente nodo (o se pase al final)
-     */
-    public void turnOnLedId(int id) {
-        if (head != null) {
-            NodeDE temp = this.head;
-            while (temp.getNextDE() != null) {
-                if (temp.getDataDE().getId() == id) {
-                    temp.getDataDE().setLedState(true);
-                    break;
-                }
-                temp = temp.getNextDE();
-            }
-        }
-    }
-
-    /**
-     -Apagar led por id
-     si hay datos
-        llamo un ayudante y que se posicione en la cabeza
-        mientras en el siguiente nodo, o en el brazo (o cable) exista algo
-            si en el id del nodo actual donde está el ayudante coincide con el id especificado
-            que se establezca el estado del la luz led del nodo actual como apagado
-            que se salga del bucle ya que se ha encontrado el id
-        que el ayudante tome el siguiente nodo (o se pase al final)
-
-     */
-
-    public void turnOffLedId(int id) {
-        if (head != null) {
-            NodeDE temp = this.head;
-            while (temp.getNextDE() != null) {
-                if (temp.getDataDE().getId() == id) {
-                    temp.getDataDE().setLedState(false);
-                    break;
-                }
-                temp = temp.getNextDE();
-            }
-        }
-    }
-
-    /**
-    -Reiniciar Leds
+    -Encender luces led
      llamo a un ayudante y que se posicione en la cabeza
-        mientras hayan datos en la lista, donde está posicionado el ayudante
-        que el ayudante establezca el estado del led del nodo actual como apagado
-        ahora que el ayudante restablezca la fecha de apagado del nodo actual como nula
-        que restablezca la fecha de encendido del nodo actual como nula
-     que el ayudante tome el siguiente nodo (o se pase al final)
+        mientras hayan datos donde está el ayudante
+        que el ayudante prenda el LED del nodo actual estableciendo el estado en true
+        que el ayudante tome el siguiente nodo (o se pase al final)
      */
-    public void rebootLeds() {
+    public void turnOnLeds() {
         NodeDE temp = head;
         while (temp != null) {
-            temp.getDataDE().setLedState(false);
-            temp.getDataDE().setDateOff(null);
-            temp.getDataDE().setDateOn(null);
+            temp.getDataDE().setLedState(true);
             temp = temp.getNextDE();
         }
     }
 
     /**
-    -Prender y apagar luces desde la mitad
-     Si hay datos
-        llamo dos ayudantes y que se paren ambos en la cabeza
-        inicializo dos contadores en cero
-        inicio una variable donde me va a calcular el punto medio de la lista
-
-        mientras, que se haga un recorrido a la lista con el contador dos para encontrar el punto medio de la lista
-            llamo al segundo ayudante que me va a recorrer los nodos hasta encontrar la mitad
-            si encuentra, que se incremente
-            mientras donde está el segundo ayudante, hay datos
-            si el contador es impar, enciende la luz led y establece la fecha y hora de encendido
-            se crea un try catch exception para poder realizar el sleep y esperar 1 segundo
-            que el segundo ayudante obtenga los datos de donde está parado y haga el proceso de apagar la luz
-            que el segundo ayudante pase al siguiente nodo y se incremente
-
-        mientras hayan datos nuevamente
-        que el primer ayudante se posicione en el contador impar, haciendo la operación para indicar que es impar
-        que establezca la hora y fecha de cuando se enciende
-        que se cree el try catch exception para poder realizar el sleep y esperar 1 segundo
-        que el primer ayudante obtenga los datos donde está parado y haga el proceso de apagar la luz
-        ahora que el primer ayudante obtenga se pase al nodo anterior para conectar los demás y que se incremente.
+    -Apagar luces led
+     llamo a un ayudante y que se posicione en la cabeza
+        mientras hayan datos donde está el ayudante
+        que el ayudante prenda el LED del nodo actual estableciendo el estado en false
+        que el ayudante tome el siguiente nodo (o se pase al final)
      */
-    public void turnOnAndOffLeds() {
+    public void turnOffLeds() {
+        NodeDE temp = head;
+        while (temp != null) {
+            temp.getDataDE().setLedState(false);
+            temp = temp.getNextDE();
+        }
+    }
+
+    /**
+    -Reiniciar Leds
+     si en la cabeza hay datos
+        le decimos a todos los leds que se apaguen
+        le decimos a todos los leds que se enciendan
+     */
+    public void rebootLeds(){
+        if (head != null){
+            turnOnLeds();
+            turnOffLeds();
+        }
+    }
+
+        /**
+    -Prender y apagar luces desde la mitad. Extremos encendidos
+    Si hay datos en la cabeza
+        llamo a un ayudante y que se posicione en la cabeza
+        inicializo un contador en 1 (teniendo en cuenta que hayan luces en la lista y rastrear la posición)
+        inicializo un contador que se llame start que representará la posición del inicio para encender y apagar
+        si el tamaño de la lista es impar
+        que se calcule la posición del inicio como la mitad del tamaño + 1
+        mientras hayan datos
+        y el contador es igual a la posición del inicio
+        que recorra la lista hasta encontrar el nodo de la posición del inicio
+        se le asigna un ayudante que tendrá en cuenta el cable o enlace del siguiente
+        ahora que el ayudante encienda y establezca la fecha de encendido para el nodo actual y el siguiente
+            ahora que el ayudante recorra todos las luces y los apague, estableciendo la fecha para cada uno
+            ahora que se haga el sleep de un segundo para apagar o encender
+            que se apaguen las luces led y se establezca la fecha de apagado para los nodos actual y siguiente
+            para ello, es necesario que el ayudante también esté atento de las luces previas (enlace) y del siguiente
+            ahora que apunte hacia el siguiente el ayudante y se establezca la fecha de encendido para los nodos actual y siguiente
+            que se salga del bucle al haber hecho los impares
+            que se incremente el contador
+            que el ayudante se pase al siguiente o llegue al final
+        ahora, si el tamaño de la lista es par
+            y dentro de la lista hayan datos
+                y el contador es igual a la posición del inicio
+                se le asigna otro ayudante que tendrá en cuenta el cable o enlace del siguiente
+                ahora que establezca el otro ayudante las fechas de encendido
+                mientras sigan habiendo datos en los siguientes enlaces
+                que recorra el ayudante los leds, los apague y establezca la fecha de cada uno
+                ahora que se haga el sleep de un segundo para apagar o encender
+                que se apaguen los leds y vuelva a establecer la fecha de apagado para los nodo actual y siguiente
+                ahora, que tome el otro ayudante el enlace anterior y posterior
+                que encienda las luces led y establezca la fecha de encendido para los nodos actual y siguiente
+                que se salga del bucle al haber hecho los pares
+                que se incremente el contador
+                que el otro ayudante se pase al siguiente o llegue al final
+     */
+    public void turnOffOn() {
         if (head != null) {
             NodeDE temp = head;
-            NodeDE temp2 = head;
-            int count1 = 0;
-            int count2 = 0;
-            int midpoint = size / 2;
+            int count = 1;
+            int start;
+            if ((size % 2) != 0) {
+                start = (size / 2) + 1;
+                while (temp != null) {
+                    if (count == start) {
+                        NodeDE tempNext = temp;
+                        temp.getDataDE().setLedState(true);
+                        temp.getDataDE().setDateOn(LocalTime.now());
 
-            while (count2 < midpoint) {
-                temp2 = temp2.getNextDE();
-                count2++;
-            }
-            while (temp2 != null) {
-                if (count2 % 2 != 0) {
-                    temp2.getDataDE().setLedState(true);
-                    temp2.getDataDE().setDateOn(LocalTime.now());
+                        while (tempNext.getNextDE() != null) {
+                            long startMillis = System.currentTimeMillis();
+                            long elapsedMillis = 0;
 
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                            while (elapsedMillis < 1000) {
+                                elapsedMillis = System.currentTimeMillis() - startMillis;
+                            }
+
+                            temp.getDataDE().setLedState(false);
+                            temp.getDataDE().setDateOff(LocalTime.now());
+                            tempNext.getDataDE().setLedState(false);
+                            tempNext.getDataDE().setDateOff(LocalTime.now());
+
+                            temp = temp.getPrevious();
+                            tempNext = tempNext.getNextDE();
+
+                            temp.getDataDE().setLedState(true);
+                            temp.getDataDE().setDateOn(LocalTime.now());
+                            tempNext.getDataDE().setLedState(true);
+                            tempNext.getDataDE().setDateOn(LocalTime.now());
+                        }
+                        break;
                     }
-                    temp2.getDataDE().setLedState(false);
-                    temp2.getDataDE().setDateOff(LocalTime.now());
+                    count++;
+                    temp = temp.getNextDE();
                 }
-                temp2 = temp2.getNextDE();
-                count2++;
-            }
-            while (temp != null) {
-                if (count1 % 2 != 0) {
-                    temp.getDataDE().setLedState(true);
-                    temp.getDataDE().setDateOn(LocalTime.now());
+            } else {
+                start = size / 2;
+                while (temp != null) {
+                    if (count == start) {
+                        NodeDE tempNext = temp.getNextDE();
+                        temp.getDataDE().setLedState(true);
+                        temp.getDataDE().setDateOn(LocalTime.now());
+                        tempNext.getDataDE().setLedState(true);
+                        tempNext.getDataDE().setDateOn(LocalTime.now());
 
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        while (tempNext.getNextDE() != null) {
+                            long startMilliSeconds = System.currentTimeMillis();
+                            long elapsedMilliSeconds = 0;
+
+                            while (elapsedMilliSeconds < 1000) {
+                                elapsedMilliSeconds = System.currentTimeMillis() - startMilliSeconds;
+                            }
+
+                            temp.getDataDE().setLedState(false);
+                            temp.getDataDE().setDateOff(LocalTime.now());
+                            tempNext.getDataDE().setLedState(false);
+                            tempNext.getDataDE().setDateOff(LocalTime.now());
+
+                            temp = temp.getPrevious();
+                            tempNext = tempNext.getNextDE();
+
+                            temp.getDataDE().setLedState(true);
+                            temp.getDataDE().setDateOn(LocalTime.now());
+                            tempNext.getDataDE().setLedState(true);
+                            tempNext.getDataDE().setDateOn(LocalTime.now());
+                        }
+                        break;
                     }
-
-                    temp.getDataDE().setLedState(false);
-                    temp.getDataDE().setDateOff(LocalTime.now());
+                    count++;
+                    temp = temp.getNextDE();
                 }
-
-                temp = temp.getPrevious();
-                count1++;
             }
         }
+    }
+
+    //Para que me pueda imprimir más de dos elementos de la lista
+    public List<Led> print(){
+        leds.clear();
+        if(head != null){
+            NodeDE temp = head;
+            while(temp != null){
+                leds.add(temp.getDataDE());
+                temp = temp.getNextDE();
+            }
+        }
+        return leds;
     }
 }

@@ -20,7 +20,7 @@ public class ListDELedController {
     @GetMapping
     public ResponseEntity<ResponseDTO> getLeds() {
         return new ResponseEntity<>(new ResponseDTO(
-                200, listDELedService.getLeds(), null), HttpStatus.OK);
+                200, listDELedService.getLeds().print(), null), HttpStatus.OK);
     }
 
     @GetMapping(path = "/addled/{id}")
@@ -44,18 +44,16 @@ public class ListDELedController {
                 null), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/turnonledid/{id}")
-    public ResponseEntity<ResponseDTO> turnOnLedId(@PathVariable int id){
-        listDELedService.getLeds().turnOnLedId(id);
-        return new ResponseEntity<>(new ResponseDTO(200, "La luz led con el identificador " + id + " ha sido encendida.",
-                null), HttpStatus.OK);
+    @GetMapping("/turnon")
+    public ResponseEntity<ResponseDTO> turnOnLeds() {
+        listDELedService.getLeds().turnOnLeds();
+        return new ResponseEntity<>(new ResponseDTO(200, "Las luces LED han sido encendidas.", null), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/turnoffledid/{id}")
-    public ResponseEntity<ResponseDTO> turnOffLedId(@PathVariable int id){
-        listDELedService.getLeds().turnOffLedId(id);
-        return new ResponseEntity<>(new ResponseDTO(200, "La luz led con el identificador " + id + " ha sido apagada.",
-                null), HttpStatus.OK);
+    @GetMapping("/turnooff")
+    public ResponseEntity<ResponseDTO> turnOffLeds() {
+        listDELedService.getLeds().turnOffLeds();
+        return new ResponseEntity<>(new ResponseDTO(200, "Las luces LED han sido apagadas.", null), HttpStatus.OK);
     }
 
     @GetMapping(path = "/rebootleds")
@@ -67,9 +65,10 @@ public class ListDELedController {
 
     @GetMapping(path = "/turnonandoffleds")
     public ResponseEntity<ResponseDTO> turnOnAndOffLeds(){
-        listDELedService.getLeds().turnOnAndOffLeds();
+        listDELedService.getLeds().turnOffOn();
         return new ResponseEntity<>(new ResponseDTO(200, "Se han prendido y apagado las luces led desde el medio",
                 null), HttpStatus.OK);
     }
+
 }
 
